@@ -29,7 +29,7 @@
 #include "animation.h"
 #include "vertex.h"
 
-#include <hash_map>
+#include <unordered_map>
 
 namespace FxOgreFBX
 {
@@ -59,7 +59,7 @@ namespace FxOgreFBX
 
         vertexKeyframe loadKeyframe(float time, poseGroup& pg,int startPoseId);
         // Get blend shape poses
-        stdext::hash_map<int, poseGroup>& getPoseGroups();
+        std::unordered_map<int, poseGroup>& getPoseGroups();
         
 
     protected:
@@ -73,7 +73,7 @@ namespace FxOgreFBX
         float m_origEnvelope;
         std::vector<float> m_origWeights;
         //blend shape poses
-        stdext::hash_map<int, poseGroup> m_poseGroups;
+        std::unordered_map<int, poseGroup> m_poseGroups;
         //blend shape target (shared geometry or submesh)
         target m_target;
     };

@@ -291,7 +291,7 @@ namespace FxOgreFBX
     
 
     // Get blend shape poses
-    stdext::hash_map<int,poseGroup>& BlendShape::getPoseGroups()
+    std::unordered_map<int,poseGroup>& BlendShape::getPoseGroups()
     {
         return m_poseGroups;
     }
