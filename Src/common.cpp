@@ -12,6 +12,7 @@
 *                                                                                *
 **********************************************************************************/
 #include "common.h"
+#include "OgreLodStrategyManager.h"
 
 #ifdef WIN32
 #include <windows.h>
@@ -24,7 +25,7 @@ namespace FxOgreFBX
         logMgr = 0;
         rgm = 0;
         mth = 0;
-        //lodMgr = 0;
+        lodMgr = 0;
         matMgr = 0;
         skelMgr = 0;
         meshSerializer = 0;
@@ -40,7 +41,7 @@ namespace FxOgreFBX
             logMgr = new Ogre::LogManager();
             rgm = new Ogre::ResourceGroupManager();
             mth = new Ogre::Math();
-            //lodMgr = new Ogre::LodStrategyManager();
+            lodMgr = new Ogre::LodStrategyManager();
             matMgr = new Ogre::MaterialManager();
             matMgr->initialise();
             skelMgr = new Ogre::SkeletonManager();
@@ -60,7 +61,7 @@ namespace FxOgreFBX
             delete meshSerializer;
             delete skelMgr;
             delete matMgr;
-            //delete lodMgr;
+            delete lodMgr;
             delete mth;
             delete rgm;
             delete logMgr;
@@ -76,7 +77,7 @@ namespace FxOgreFBX
         delete meshSerializer;
         delete skelMgr;
         delete matMgr;
-        //delete lodMgr;
+        delete lodMgr;
         delete mth;
         delete rgm;
         delete logMgr;

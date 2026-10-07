@@ -46,6 +46,17 @@ the project before building.  The External folder is currently empty, but
 placing the FBX, Ogre, and tinyxml2 source files in their respective folders
 will let you build without modifying project settings.
 
+Alternatively, CMakeLists.txt builds both targets against an installed Ogre
+SDK (default: ../ogre-14.5.2/SDK/<config>, override with -DOGRE_SDK=...) and
+the FBX SDK (-DFBXSDK_ROOT=..., default 2020.3.9 in Program Files), with
+tinyxml2.h/.cpp in External/tinyxml:
+
+    cmake -S . -B build/Release -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release
+    cmake --build build/Release --config Release
+
+The result (ExecFxOgreFBX.exe, FxOgreFBX.dll, OgreMain.dll) lands in
+build/Release/bin.
+
 
 Things to watch out for
 ----------------------------------------------------------------------------------

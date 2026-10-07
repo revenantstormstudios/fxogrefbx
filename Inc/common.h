@@ -38,7 +38,7 @@ namespace FxOgreFBX
         Ogre::LogManager* logMgr; 
         Ogre::ResourceGroupManager* rgm; 
         Ogre::Math* mth; 
-        //Ogre::LodStrategyManager* lodMgr; 
+        Ogre::LodStrategyManager* lodMgr; // Ogre::Mesh's constructor needs it
         Ogre::MaterialManager* matMgr; 
         Ogre::SkeletonManager* skelMgr; 
         Ogre::MeshSerializer* meshSerializer; 

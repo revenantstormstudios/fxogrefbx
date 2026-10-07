@@ -29,6 +29,23 @@
 
 namespace FxOgreFBX
 {
+    // Ogre 13+ drops material and skeleton names it cannot resolve while importing
+    // a .mesh; create placeholders (as OgreMeshUpgrader does) so a re-export keeps them.
+    struct PlaceholderResourceCreator : public Ogre::MeshSerializerListener
+    {
+        void processMaterialName(Ogre::Mesh *mesh, Ogre::String *name)
+        {
+            if (!name->empty())
+                Ogre::MaterialManager::getSingleton().createOrRetrieve(*name, mesh->getGroup());
+        }
+        void processSkeletonName(Ogre::Mesh *mesh, Ogre::String *name)
+        {
+            if (!name->empty())
+                Ogre::SkeletonManager::getSingleton().createOrRetrieve(*name, mesh->getGroup(), true);
+        }
+        void processMeshCompleted(Ogre::Mesh *mesh) {}
+    };
+
     /***** Class Mesh *****/
     // constructor
     Mesh::Mesh(const std::string& name)
@@ -138,6 +155,8 @@ namespace FxOgreFBX
 
         Ogre::MeshPtr pMesh = managers.meshMgr->createManual("LocalMesh",Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         Ogre::MeshSerializer meshSerializer;
+        PlaceholderResourceCreator placeholders;
+        meshSerializer.setListener(&placeholders);
         Ogre::DataStreamPtr stream(memstream);
         
         try
@@ -1432,6 +1451,10 @@ namespace FxOgreFBX
         if (m_pSkeleton && params.exportSkeleton)
         {
             std::string filename = StripToTopParent(params.skeletonFilename);
+            // Ogre 13+ loads the skeleton here and drops the link (and the bone
+            // assignments) if that fails; a manual placeholder keeps them.
+            Ogre::SkeletonManager::getSingleton().createOrRetrieve(filename.c_str(),
+                Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
             pMesh->setSkeletonName(filename.c_str());
         }
         // Write poses
@@ -1503,9 +1526,13 @@ namespace FxOgreFBX
         catch( Ogre::Exception& e )
         {
             FxOgreFBXLog("Error! %s", e.getFullDescription().c_str());
+            meshManager.remove(pMesh);
             return false;
         }
-        pMesh.setNull();
+        // Destroy the mesh now, while the buffer/material/skeleton managers it
+        // references still exist (they are torn down before the MeshManager).
+        meshManager.remove(pMesh);
+        pMesh.reset();
         return true;
     }
 

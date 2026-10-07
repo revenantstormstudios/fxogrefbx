@@ -310,7 +310,10 @@ namespace FxOgreFBX
             pSubmesh = pMesh->createSubMesh(m_name.c_str());
         else
             pSubmesh = pMesh->createSubMesh();
-        // Set material
+        // Set material. Ogre 13+ submeshes hold a MaterialPtr, so a name with no
+        // Material behind it is dropped and the .mesh gets an empty material name.
+        Ogre::MaterialManager::getSingleton().createOrRetrieve(m_pMaterial->name().c_str(),
+            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         pSubmesh->setMaterialName(m_pMaterial->name().c_str());
         // Set use shared geometry flag
         pSubmesh->useSharedVertices = params.useSharedGeom;
